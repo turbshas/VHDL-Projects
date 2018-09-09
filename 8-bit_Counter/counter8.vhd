@@ -15,32 +15,33 @@ end entity;
 
 architecture main of counter_8b is
 
-signal clk_en : std_logic;
-signal prev_reg : std_logic_vector(WIDTH - 1 downto 0);
+signal prev_reg : std_logic_vector(WIDTH - 2 downto 0);
 signal reg_en : std_logic_vector(WIDTH - 1 downto 0);	
 signal count : std_logic_vector(WIDTH - 1 downto 0);
 
 begin
     o_count <= count;
-	clk_en <= clk AND i_enable;
 	
-	reg_enables : process(clk_en, count, prev_reg) begin
-		reg_en(0) <= clk_en;
+	reg_enables : process(i_enable, count, prev_reg) begin
+		reg_en(0) <= i_enable;
 		prev_reg(0) <= count(0);
 
-		for i in 1 to WIDTH - 1 loop
+		for i in 1 to WIDTH - 2 loop
 			prev_reg(i) <= prev_reg(i - 1) AND count(i);
-			reg_en(i) <= prev_reg(i - 1) AND clk_en;
+			reg_en(i) <= prev_reg(i - 1) AND i_enable;
 		end loop;
+		
+        reg_en(WIDTH - 1) <= prev_reg(WIDTH - 2) AND i_enable;
 	end process;
     
     generate_regs: for i in 0 to WIDTH - 1 generate
-        process(reg_en, reset) begin
---            if reset = '1' then
---                count(i) <= '0';
---            els
-            if rising_edge(reg_en(i)) then
-                count(i) <= NOT count(i);
+        process(clk, reset, reg_en) begin
+            if rising_edge(clk) then
+                if reset = '1' then
+                    count(i) <= '0';
+                elsif reg_en(i) = '1' then
+                    count(i) <= NOT count(i);
+                end if;                
             end if;
         end process;
     end generate;
