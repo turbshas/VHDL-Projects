@@ -44,41 +44,5 @@ begin
             end if;
         end process;
     end generate;
---	process(clk, reg_en, reset) begin
---		if reset = '1' then
---			count <= (others=>'0');
---		else
---			if rising_edge(reg_en(0)) then
---				count(0) <= NOT count(0);
---			end if;
---			if rising_edge(reg_en(1)) then
---				count(1) <= NOT count(1);
---			end if;
---			if rising_edge(reg_en(2)) then
---				count(2) <= NOT count(2);
---			end if;
---			if rising_edge(reg_en(3)) then
---				count(3) <= NOT count(3);
---			end if;
---			if rising_edge(reg_en(4)) then
---				count(4) <= NOT count(4);
---			end if;
---			if rising_edge(reg_en(5)) then
---				count(5) <= NOT count(5);
---			end if;
---			if rising_edge(reg_en(6)) then
---				count(6) <= NOT count(6);
---			end if;
---			if rising_edge(reg_en(7)) then
---				count(7) <= NOT count(7);
---			end if;
-
-----			for i in 1 to WIDTH - 1 loop
-----				if rising_edge(reg_en(i)) then
-----					count(i) <= NOT count(i);
-----				end if;
-----			end loop;
---		end if;
---	end process;
 
 end architecture;
