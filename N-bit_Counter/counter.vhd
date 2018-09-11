@@ -1,19 +1,19 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity counter_8b is 
+entity counter is 
 	generic(
 		WIDTH : natural := 8
 	       );
 	port(
-		clk, 
-		reset,
-	    i_enable : in std_logic;
-		o_count : out std_logic_vector(WIDTH - 1 downto 0)
+		clk       : in std_logic; 
+		reset     : in std_logic;
+	    i_enable  : in std_logic;
+		o_count   : out std_logic_vector(WIDTH - 1 downto 0)
 	    );
 end entity;
 
-architecture main of counter_8b is
+architecture main of counter is
 
 signal prev_reg : std_logic_vector(WIDTH - 2 downto 0);
 signal reg_en : std_logic_vector(WIDTH - 1 downto 0);	
@@ -33,17 +33,19 @@ begin
 		
         reg_en(WIDTH - 1) <= prev_reg(WIDTH - 2) AND i_enable;
 	end process;
-    
-    generate_regs: for i in 0 to WIDTH - 1 generate
-        process(clk, reset, reg_en) begin
-            if rising_edge(clk) then
-                if reset = '1' then
-                    count(i) <= '0';
-                elsif reg_en(i) = '1' then
-                    count(i) <= NOT count(i);
-                end if;                
-            end if;
-        end process;
-    end generate;
+
+    process(clk, reset, reg_en) begin
+        if rising_edge(clk) then
+            if reset = '1' then
+                count <= (others=>'0');
+            else
+                for i in 0 to WIDTH - 1 loop
+                    if reg_en(i) = '1' then                
+                        count(i) <= NOT count(i);
+                    end if;
+                end loop;
+            end if;                
+        end if;
+    end process;
 
 end architecture;
